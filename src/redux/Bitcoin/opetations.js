@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
 const YAHOO_FINANCE_URL =
   "https://query1.finance.yahoo.com/v7/finance/download/BTC-USD";
@@ -16,7 +16,7 @@ export const getBitcoinCurrency = createAsyncThunk(
       events: "history",
     };
 
-    const proxyUrl = `${YAHOO_FINANCE_URL}`;
+    const proxyUrl = `${CORS_PROXY}${YAHOO_FINANCE_URL}`;
 
     try {
       const response = await axios.get(proxyUrl, { params });
