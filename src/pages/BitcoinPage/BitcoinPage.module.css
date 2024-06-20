@@ -1,0 +1,17 @@
+.pageCont {
+  max-width: 375px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 8px 10px 20px 10px;
+}
+@media only screen and (min-width: 768px) {
+  .pageCont {
+    max-width: 768px;
+  }
+}
+@media only screen and (min-width: 1440px) {
+  .pageCont {
+    max-width: 1440px;
+  }
+}

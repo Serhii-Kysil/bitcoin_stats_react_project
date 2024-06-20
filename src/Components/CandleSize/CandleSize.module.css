@@ -1,0 +1,11 @@
+.selectContainer {
+  width: 100px;
+  font-size: 12px;
+}
+
+@media only screen and (min-width: 768px) {
+  .selectContainer {
+    font-size: 14px;
+    width: 150px;
+  }
+}
