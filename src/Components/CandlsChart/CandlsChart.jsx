@@ -49,7 +49,7 @@ export const CandlsChart = () => {
     setSquares(squares.filter((_, i) => i !== index));
   };
 
-  //drugging element by holding left click
+  //drugging marker by holding left click on marker
   const handleMouseDown = (index) => (event) => {
     setDragging(index);
   };
