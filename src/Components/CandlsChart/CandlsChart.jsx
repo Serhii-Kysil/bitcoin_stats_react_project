@@ -1,12 +1,34 @@
+import { useState, useEffect } from "react";
 import css from "./CandlsChart.module.css";
 import Chart from "react-apexcharts";
-
 import { useSelector } from "react-redux";
-
 import { getItems } from "../../redux/Bitcoin/selector";
 
 export const CandlsChart = () => {
   const items = useSelector(getItems);
+  const [ctrlPressed, setCtrlPressed] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Control") {
+        setCtrlPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === "Control") {
+        setCtrlPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   const seriesData = items.map((item) => ({
     x: new Date(item.Date),
@@ -25,16 +47,25 @@ export const CandlsChart = () => {
       toolbar: {
         show: false,
       },
+      events: {
+        mouseMove: function (event, chartContext, config) {
+          if (!ctrlPressed) {
+            chartContext.clearAnnotations();
+          }
+        },
+      },
     },
     xaxis: {
       type: "datetime",
     },
-
     yaxis: {
       opposite: true,
       tooltip: {
-        enabled: true,
+        enabled: ctrlPressed,
       },
+    },
+    tooltip: {
+      enabled: ctrlPressed,
     },
   };
 
