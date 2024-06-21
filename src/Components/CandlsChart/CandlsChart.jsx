@@ -51,7 +51,7 @@ export const CandlsChart = () => {
         options={options}
         series={series}
         type="candlestick"
-        height={350}
+        height="100%"
       />
     </div>
   );

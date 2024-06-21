@@ -43,6 +43,17 @@
   padding: 10px;
   justify-content: center;
 }
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .quickSelect {
   padding: 0;

@@ -16,8 +16,8 @@ export const DateRange = () => {
   const endDate = fromUnixTimestamp(useSelector(getEndDate));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const modalRef = useRef(null);
+  const inputRef = useRef(null);
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -28,8 +28,9 @@ export const DateRange = () => {
     }
   };
 
-  const handleInputClick = () => {
-    setIsModalOpen(!isModalOpen);
+  const handleInputClick = (event) => {
+    event.stopPropagation();
+    setIsModalOpen((prev) => !prev);
   };
 
   const handleQuickSelect = (period) => {
@@ -85,7 +86,12 @@ export const DateRange = () => {
   };
 
   const handleClickOutside = (event) => {
-    if (modalRef.current && !modalRef.current.contains(event.target)) {
+    if (
+      modalRef.current &&
+      !modalRef.current.contains(event.target) &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target)
+    ) {
       setIsModalOpen(false);
     }
   };
@@ -100,16 +106,16 @@ export const DateRange = () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.body.classList.remove(css.modalOpen);
     }
-
     return () => {
       document.removeEventListener("keydown", handleKeydown);
       document.removeEventListener("mousedown", handleClickOutside);
       document.body.classList.remove(css.modalOpen);
     };
   }, [isModalOpen]);
+
   return (
     <div className={css.container}>
-      <div className={css.inputCont}>
+      <div className={css.inputCont} ref={inputRef}>
         <input
           className={css.input}
           type="text"
