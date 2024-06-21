@@ -14,6 +14,7 @@ This project is a responsive ReactJs application designed for monitoring Bitcoin
   - [Changing the API URL](#changing-the-api-url)
 - [Usage](#usage)
   - [Interacting with the Dashboard](#interacting-with-the-dashboard)
+- [Marker Functionality](#marker-functionality)
 - [API](#api)
 
 ## Features
@@ -24,6 +25,7 @@ This project is a responsive ReactJs application designed for monitoring Bitcoin
 - **Date Range Filter:** Allows users to select a specific date range to view Bitcoin prices.
 - **Candle Size Filter:** Users can choose the candle size (1D, 1W, 1M) for the chart.
 - **Last Update Info:** Displays the time of the last data update and allows users to manually refresh data.
+- **Marker Functionality:** Users can place and remove markers on the chart to highlight specific price points.
 
 ## Technologies Used
 
@@ -81,6 +83,21 @@ After starting the development server, you can access the application in your we
 - **Select Date Range:** Use the date picker to select the range of dates for which you want to view Bitcoin prices.
 - **Change Candle Size:** Use the dropdown menu to select the candle size (1D, 1W, 1M).
 - **Manual Data Refresh:** Click on the "Last Update" timestamp to manually refresh the data.
+
+## Marker Functionality
+
+Users can place and remove markers on the candlestick chart to highlight specific price points such as the highest or lowest prices in the selected date range. Markers are displayed as yellow diamonds on the chart and can be interacted with as follows:
+
+Web Version:
+
+- **Place Marker**: Left-click on the desired point on the chart.
+- **Remove Marker**: Right-click on the existing marker.
+- **Move Marker**: Left-click and drag the marker to a new position.
+
+Mobile Version:
+
+- **Place Marker**: Tap on the desired point on the chart.
+- **Remove Marker**: Drag the marker off the screen to delete it.
 
 ## API
 
