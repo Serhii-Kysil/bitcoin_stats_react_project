@@ -3,12 +3,24 @@ import css from "./CandlsChart.module.css";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
 import { getItems } from "../../redux/Bitcoin/selector";
+import {
+  getStartDate,
+  getEndDate,
+  getFrequency,
+} from "../../redux/Bitcoin/selector";
 
 export const CandlsChart = () => {
+  //variables from auto removing markers
+  const startDate = useSelector(getStartDate);
+  const endDate = useSelector(getEndDate);
+  const frequency = useSelector(getFrequency);
+
   const items = useSelector(getItems);
+
   const [ctrlPressed, setCtrlPressed] = useState(false);
   const [squares, setSquares] = useState([]);
   const [dragging, setDragging] = useState(null);
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -32,6 +44,13 @@ export const CandlsChart = () => {
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      setSquares([]);
+    }
+    // Clear all markers when start date, end date, or frequency changes
+  }, [startDate, endDate, frequency]);
 
   //add new markers by pressing left click
   const handleDivClick = (event) => {
