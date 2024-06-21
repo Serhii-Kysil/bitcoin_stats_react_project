@@ -68,8 +68,9 @@ export const DateRange = () => {
         end = today;
         break;
       default:
-        start = today;
-        end = today;
+        start = new Date(today);
+        start.setDate(start.getDate() - 1);
+        end = start;
     }
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
