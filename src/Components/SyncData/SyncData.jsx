@@ -19,7 +19,7 @@ export const SyncData = () => {
 
   const [timeSinceLastSync, setTimeSinceLastSync] = useState(0);
 
-  const syncInterval = import.meta.env.VITE_SYNC_INTERVAL || 15;
+  const syncInterval = import.meta.env.VITE_SYNC_INTERVAL;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,6 +35,7 @@ export const SyncData = () => {
               frequency,
             })
           );
+          setTimeSinceLastSync(0);
         }
       }
     }, 60000);
