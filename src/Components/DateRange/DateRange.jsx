@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import css from "./DateRange.module.css";
-import { setStartDate, setEndDate } from "../../redux/Bitcoin/bitcoinSlice";
+import {
+  setStartDate,
+  setEndDate,
+  setFrequency,
+} from "../../redux/Bitcoin/bitcoinSlice";
+
 import { getStartDate, getEndDate } from "../../redux/Bitcoin/selector";
 
 import { IoIosArrowDown } from "react-icons/io";
@@ -23,6 +28,7 @@ export const DateRange = () => {
     const [start, end] = dates;
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
+    dispatch(setFrequency("1d"));
     if (start && end) {
       setIsModalOpen(false);
     }
@@ -67,6 +73,7 @@ export const DateRange = () => {
     }
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
+    dispatch(setFrequency("1d"));
     setIsModalOpen(false);
   };
 
