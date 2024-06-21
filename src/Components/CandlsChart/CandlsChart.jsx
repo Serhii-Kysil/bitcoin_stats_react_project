@@ -52,7 +52,6 @@ export const CandlsChart = () => {
     // Clear all markers when start date, end date, or frequency changes
   }, [startDate, endDate, frequency]);
 
-  //add new markers by pressing left click
   const handleDivClick = (event) => {
     const container = event.currentTarget;
     const rect = container.getBoundingClientRect();
@@ -70,16 +69,16 @@ export const CandlsChart = () => {
     }
   };
 
-  //delete marker by pressing right click
   const handleSquareRightClick = (event, index) => {
     event.preventDefault();
     setSquares(squares.filter((_, i) => i !== index));
   };
 
-  //drugging marker by holding left click on marker
   const handleMouseDown = (index) => (event) => {
     setDragging(index);
   };
+
+  //moving marker by holding mouse btn
   const handleMouseMove = (event) => {
     if (dragging === null) return;
 
@@ -92,17 +91,53 @@ export const CandlsChart = () => {
         index === dragging ? { x, y } : square
       )
     );
+
+    if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+      setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
+      setDragging(null);
+    }
   };
+
+  //delete marker by moving beyond borders
+  const handleTouchMove = (event) => {
+    if (dragging === null) return;
+
+    const touch = event.touches[0];
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    setSquares((prevSquares) =>
+      prevSquares.map((square, index) =>
+        index === dragging ? { x, y } : square
+      )
+    );
+
+    if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+      setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
+      setDragging(null);
+    }
+  };
+
   const handleMouseUp = () => {
     setDragging(null);
   };
+
+  const handleTouchEnd = () => {
+    setDragging(null);
+  };
+
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [dragging]);
 
@@ -170,6 +205,7 @@ export const CandlsChart = () => {
           key={index}
           onContextMenu={(e) => handleSquareRightClick(e, index)}
           onMouseDown={handleMouseDown(index)}
+          onTouchStart={handleMouseDown(index)}
           style={{
             position: "absolute",
             top: `${square.y - 14}px`,
