@@ -33,7 +33,6 @@ export const getBitcoinCurrency = createAsyncThunk(
         }, {});
       });
 
-      console.log(results);
       return results;
     } catch (e) {
       return thunkAPI.rejectWithValue(e.message);
