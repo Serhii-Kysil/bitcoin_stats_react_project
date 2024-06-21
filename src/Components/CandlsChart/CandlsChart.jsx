@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import css from "./CandlsChart.module.css";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
@@ -7,6 +7,9 @@ import { getItems } from "../../redux/Bitcoin/selector";
 export const CandlsChart = () => {
   const items = useSelector(getItems);
   const [ctrlPressed, setCtrlPressed] = useState(false);
+  const [squares, setSquares] = useState([]);
+  const [dragging, setDragging] = useState(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -30,6 +33,52 @@ export const CandlsChart = () => {
     };
   }, []);
 
+  //add new markers by pressing left click
+  const handleDivClick = (event) => {
+    const container = event.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const newSquare = { x, y };
+    setSquares([...squares, newSquare]);
+  };
+
+  //delete marker by pressing right click
+  const handleSquareRightClick = (event, index) => {
+    event.preventDefault();
+    setSquares(squares.filter((_, i) => i !== index));
+  };
+
+  //drugging element by holding left click
+  const handleMouseDown = (index) => (event) => {
+    setDragging(index);
+  };
+  const handleMouseMove = (event) => {
+    if (dragging === null) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    setSquares((prevSquares) =>
+      prevSquares.map((square, index) =>
+        index === dragging ? { x, y } : square
+      )
+    );
+  };
+  const handleMouseUp = () => {
+    setDragging(null);
+  };
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragging]);
+
   const seriesData = items.map((item) => ({
     x: new Date(item.Date),
     y: [
@@ -48,7 +97,7 @@ export const CandlsChart = () => {
         show: false,
       },
       events: {
-        mouseMove: function (event, chartContext, config) {
+        mouseMove: function (event, chartContext) {
           if (!ctrlPressed) {
             chartContext.clearAnnotations();
           }
@@ -77,13 +126,35 @@ export const CandlsChart = () => {
   ];
 
   return (
-    <div className={css.chartCont}>
+    <div
+      className={css.chartCont}
+      onClick={handleDivClick}
+      style={{ position: "relative" }}
+      ref={containerRef}
+    >
       <Chart
         options={options}
         series={series}
         type="candlestick"
         height="100%"
       />
+      {squares.map((square, index) => (
+        <div
+          key={index}
+          onContextMenu={(e) => handleSquareRightClick(e, index)}
+          onMouseDown={handleMouseDown(index)}
+          style={{
+            position: "absolute",
+            top: `${square.y - 14}px`,
+            left: `${square.x}px`,
+            width: "20px",
+            height: "20px",
+            backgroundColor: "#FFA500",
+            transform: "translate(-50%, -50%) rotate(45deg)",
+            cursor: "pointer",
+          }}
+        />
+      ))}
     </div>
   );
 };
