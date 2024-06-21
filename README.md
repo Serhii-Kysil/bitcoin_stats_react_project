@@ -43,7 +43,7 @@ To get a local copy up and running, follow these steps.
 
 ### Installation
 
-1. Download the repo:
+1. Download the repo
 2. Install NPM packages:
    ```sh
    npm install
