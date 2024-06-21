@@ -3,8 +3,7 @@ import axios from "axios";
 
 const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
-const YAHOO_FINANCE_URL =
-  "https://query1.finance.yahoo.com/v7/finance/download/BTC-USD";
+const url = import.meta.env.VITE_YAHOO_FINANCE_URL;
 
 export const getBitcoinCurrency = createAsyncThunk(
   "bitcoin/getBitcoinCurrency",
@@ -16,7 +15,7 @@ export const getBitcoinCurrency = createAsyncThunk(
       events: "history",
     };
 
-    const proxyUrl = `${CORS_PROXY}${YAHOO_FINANCE_URL}`;
+    const proxyUrl = `${CORS_PROXY}${url}`;
 
     try {
       const response = await axios.get(proxyUrl, { params });
