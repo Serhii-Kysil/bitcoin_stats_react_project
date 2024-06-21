@@ -39,8 +39,15 @@ export const CandlsChart = () => {
     const rect = container.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const newSquare = { x, y };
-    setSquares([...squares, newSquare]);
+
+    const isExistingSquare = squares.some(
+      (square) => Math.abs(square.x - x) < 10 && Math.abs(square.y - y) < 10
+    );
+
+    if (!isExistingSquare) {
+      const newSquare = { x, y };
+      setSquares([...squares, newSquare]);
+    }
   };
 
   //delete marker by pressing right click
