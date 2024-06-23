@@ -21,6 +21,12 @@ export const CandlsChart = () => {
   const [dragging, setDragging] = useState(null);
   const containerRef = useRef(null);
 
+  //Save current markers in state with their key settings
+  const saveMarkers = (newSquares) => {
+    const key = `${startDate}_${endDate}_${frequency}`;
+    setSavedMarkers((prev) => ({ ...prev, [key]: newSquares }));
+  };
+
   //Effect for catching Ctrl keydown and keyup
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -52,7 +58,7 @@ export const CandlsChart = () => {
     } else {
       setSquares([]);
     }
-  }, [startDate, endDate, frequency]);
+  }, [startDate, endDate, frequency, savedMarkers]);
 
   //Click for adding new markers
   const handleDivClick = (event) => {
@@ -137,12 +143,6 @@ export const CandlsChart = () => {
   //Stop dragging when touch end
   const handleTouchEnd = () => {
     setDragging(null);
-  };
-
-  //Save current markers in state with their key settings
-  const saveMarkers = (newSquares) => {
-    const key = `${startDate}_${endDate}_${frequency}`;
-    setSavedMarkers((prev) => ({ ...prev, [key]: newSquares }));
   };
 
   //Manage event listeners

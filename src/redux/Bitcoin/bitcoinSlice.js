@@ -4,8 +4,7 @@ import { toUnixTimestamp, getPreviousDay } from "../../utils/dateUtils";
 
 import toast from "react-hot-toast";
 
-const previousDate = getPreviousDay(new Date());
-const currentDateTimestamp = toUnixTimestamp(previousDate);
+const currentDateTimestamp = toUnixTimestamp(new Date());
 
 const bitcoinSlice = createSlice({
   name: "bitcoin",

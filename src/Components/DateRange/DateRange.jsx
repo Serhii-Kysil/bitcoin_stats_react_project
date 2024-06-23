@@ -26,6 +26,7 @@ export const DateRange = () => {
 
   const onChange = (dates) => {
     const [start, end] = dates;
+    console.log(start);
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
     dispatch(setFrequency("1d"));
@@ -41,37 +42,37 @@ export const DateRange = () => {
 
   const handleQuickSelect = (period) => {
     let start, end;
-    const today = new Date();
     switch (period) {
       case "today":
-        start = today;
-        end = today;
+        start = new Date(endDate);
+        end = new Date(endDate);
         break;
       case "yesterday":
-        start = new Date(today);
+        start = new Date(endDate);
         start.setDate(start.getDate() - 1);
-        end = start;
+        end = new Date(start);
         break;
       case "lastWeek":
-        start = new Date(today);
+        start = new Date(endDate);
         start.setDate(start.getDate() - 7);
-        end = today;
+        end = new Date(endDate);
         break;
       case "lastMonth":
-        start = new Date(today);
+        start = new Date(endDate);
         start.setMonth(start.getMonth() - 1);
-        end = today;
+        end = new Date(endDate);
         break;
       case "lastQuarter":
-        start = new Date(today);
+        start = new Date(endDate);
         start.setMonth(start.getMonth() - 3);
-        end = today;
+        end = new Date(endDate);
         break;
       default:
-        start = new Date(today);
+        start = new Date(endDate);
         start.setDate(start.getDate() - 1);
-        end = start;
+        end = new Date(start);
     }
+    console.log(start);
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
     dispatch(setFrequency("1d"));
