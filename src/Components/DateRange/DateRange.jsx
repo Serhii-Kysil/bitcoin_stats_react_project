@@ -26,7 +26,6 @@ export const DateRange = () => {
 
   const onChange = (dates) => {
     const [start, end] = dates;
-    console.log(start);
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
     dispatch(setFrequency("1d"));
@@ -69,7 +68,6 @@ export const DateRange = () => {
         break;
       default:
         start = new Date(endDate);
-        start.setDate(start.getDate() - 1);
         end = new Date(start);
     }
     console.log(start);
