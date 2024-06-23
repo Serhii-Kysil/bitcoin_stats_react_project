@@ -2,27 +2,26 @@ import { useState, useEffect, useRef } from "react";
 import css from "./CandlsChart.module.css";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
-import { getItems } from "../../redux/Bitcoin/selector";
 import {
+  getItems,
   getStartDate,
   getEndDate,
   getFrequency,
 } from "../../redux/Bitcoin/selector";
 
 export const CandlsChart = () => {
-  //variables from auto removing markers
   const startDate = useSelector(getStartDate);
   const endDate = useSelector(getEndDate);
   const frequency = useSelector(getFrequency);
-
   const items = useSelector(getItems);
 
   const [ctrlPressed, setCtrlPressed] = useState(false);
   const [squares, setSquares] = useState([]);
+  const [savedMarkers, setSavedMarkers] = useState({});
   const [dragging, setDragging] = useState(null);
-
   const containerRef = useRef(null);
 
+  //Effect for catching Ctrl keydown and keyup
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Control") {
@@ -45,40 +44,49 @@ export const CandlsChart = () => {
     };
   }, []);
 
+  //Load markers when data or frequency changed
   useEffect(() => {
-    if (startDate && endDate) {
+    const key = `${startDate}_${endDate}_${frequency}`;
+    if (savedMarkers[key]) {
+      setSquares(savedMarkers[key]);
+    } else {
       setSquares([]);
     }
-    // Clear all markers when start date, end date, or frequency changes
   }, [startDate, endDate, frequency]);
 
+  //Click for adding new markers
   const handleDivClick = (event) => {
     const container = event.currentTarget;
     const rect = container.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    //check if square exists
     const isExistingSquare = squares.some(
       (square) => Math.abs(square.x - x) < 10 && Math.abs(square.y - y) < 10
     );
 
     if (!isExistingSquare) {
       const newSquare = { x, y };
-      setSquares([...squares, newSquare]);
+      const newSquares = [...squares, newSquare];
+      setSquares(newSquares);
+      saveMarkers(newSquares);
     }
   };
 
+  //Right click for removing markers on desktop
   const handleSquareRightClick = (event, index) => {
     event.preventDefault();
-    setSquares(squares.filter((_, i) => i !== index));
+    const newSquares = squares.filter((_, i) => i !== index);
+    setSquares(newSquares);
+    saveMarkers(newSquares);
   };
 
+  //When mouse down for dragging
   const handleMouseDown = (index) => (event) => {
     setDragging(index);
   };
 
-  //moving marker by holding mouse btn
+  //Update position dragged marker on desktop device
   const handleMouseMove = (event) => {
     if (dragging === null) return;
 
@@ -86,11 +94,12 @@ export const CandlsChart = () => {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    setSquares((prevSquares) =>
-      prevSquares.map((square, index) =>
-        index === dragging ? { x, y } : square
-      )
+    const newSquares = squares.map((square, index) =>
+      index === dragging ? { x, y } : square
     );
+
+    setSquares(newSquares);
+    saveMarkers(newSquares);
 
     if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
       setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
@@ -98,7 +107,7 @@ export const CandlsChart = () => {
     }
   };
 
-  //delete marker by moving beyond borders
+  //Touch event to update markers position on mobile device
   const handleTouchMove = (event) => {
     if (dragging === null) return;
 
@@ -107,11 +116,12 @@ export const CandlsChart = () => {
     const x = touch.clientX - rect.left;
     const y = touch.clientY - rect.top;
 
-    setSquares((prevSquares) =>
-      prevSquares.map((square, index) =>
-        index === dragging ? { x, y } : square
-      )
+    const newSquares = squares.map((square, index) =>
+      index === dragging ? { x, y } : square
     );
+
+    setSquares(newSquares);
+    saveMarkers(newSquares);
 
     if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
       setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
@@ -119,14 +129,23 @@ export const CandlsChart = () => {
     }
   };
 
+  //Stop dragging when mouse up
   const handleMouseUp = () => {
     setDragging(null);
   };
 
+  //Stop dragging when touch end
   const handleTouchEnd = () => {
     setDragging(null);
   };
 
+  //Save current markers in state with their key settings
+  const saveMarkers = (newSquares) => {
+    const key = `${startDate}_${endDate}_${frequency}`;
+    setSavedMarkers((prev) => ({ ...prev, [key]: newSquares }));
+  };
+
+  //Manage event listeners
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
