@@ -41,35 +41,41 @@ export const DateRange = () => {
 
   const handleQuickSelect = (period) => {
     let start, end;
+
+    const today = new Date();
+
     switch (period) {
       case "today":
-        start = new Date(endDate);
-        end = new Date(endDate);
+        start = today;
+        start.setDate(today.getDate() - 1);
+        end = today;
         break;
       case "yesterday":
-        start = new Date(endDate);
+        start = new Date(today);
         start.setDate(start.getDate() - 1);
-        end = new Date(start);
+        end = today;
         break;
       case "lastWeek":
-        start = new Date(endDate);
+        start = start = new Date(today);
         start.setDate(start.getDate() - 7);
-        end = new Date(endDate);
+        end = today;
         break;
       case "lastMonth":
-        start = new Date(endDate);
+        start = start = new Date(today);
         start.setMonth(start.getMonth() - 1);
-        end = new Date(endDate);
+        end = today;
         break;
       case "lastQuarter":
-        start = new Date(endDate);
+        start = start = new Date(today);
         start.setMonth(start.getMonth() - 3);
-        end = new Date(endDate);
+        end = today;
         break;
       default:
-        start = new Date(endDate);
-        end = new Date(start);
+        start = new Date(today);
+        start.setDate(today.getDate() - 1);
+        end = start;
     }
+
     console.log(start);
     dispatch(setStartDate(toUnixTimestamp(start)));
     dispatch(setEndDate(toUnixTimestamp(end)));
