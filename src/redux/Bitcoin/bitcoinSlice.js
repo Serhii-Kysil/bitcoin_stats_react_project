@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getBitcoinCurrency } from "./opetations";
-import { toUnixTimestamp } from "../../utils/dateUtils";
+import { toUnixTimestamp, getPreviousDay } from "../../utils/dateUtils";
 
 import toast from "react-hot-toast";
 
-const currentDateTimestamp = toUnixTimestamp(new Date());
+const previousDay = getPreviousDay(new Date());
+const currentDateTimestamp = toUnixTimestamp(previousDay);
 
 const bitcoinSlice = createSlice({
   name: "bitcoin",
