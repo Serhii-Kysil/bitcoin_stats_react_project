@@ -1,30 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import css from "./CandlsChart.module.css";
 import Chart from "react-apexcharts";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   getItems,
   getStartDate,
   getEndDate,
   getFrequency,
+  getMarkers,
 } from "../../redux/Bitcoin/selector";
 
+import { setMarkers } from "../../redux/Bitcoin/bitcoinSlice";
+
 export const CandlsChart = () => {
+  const dispatch = useDispatch();
   const startDate = useSelector(getStartDate);
   const endDate = useSelector(getEndDate);
   const frequency = useSelector(getFrequency);
   const items = useSelector(getItems);
+  const savedMarkers = useSelector(getMarkers);
 
   const [ctrlPressed, setCtrlPressed] = useState(false);
   const [squares, setSquares] = useState([]);
-  const [savedMarkers, setSavedMarkers] = useState({});
   const [dragging, setDragging] = useState(null);
   const containerRef = useRef(null);
 
   //Save current markers in state with their key settings
   const saveMarkers = (newSquares) => {
     const key = `${startDate}_${endDate}_${frequency}`;
-    setSavedMarkers((prev) => ({ ...prev, [key]: newSquares }));
+    dispatch(setMarkers({ key, markers: newSquares }));
   };
 
   //Effect for catching Ctrl keydown and keyup
@@ -105,7 +109,6 @@ export const CandlsChart = () => {
     );
 
     setSquares(newSquares);
-    saveMarkers(newSquares);
 
     if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
       setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
@@ -127,7 +130,6 @@ export const CandlsChart = () => {
     );
 
     setSquares(newSquares);
-    saveMarkers(newSquares);
 
     if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
       setSquares((prevSquares) => prevSquares.filter((_, i) => i !== dragging));
@@ -137,11 +139,17 @@ export const CandlsChart = () => {
 
   //Stop dragging when mouse up
   const handleMouseUp = () => {
+    if (dragging !== null) {
+      saveMarkers(squares);
+    }
     setDragging(null);
   };
 
   //Stop dragging when touch end
   const handleTouchEnd = () => {
+    if (dragging !== null) {
+      saveMarkers(squares);
+    }
     setDragging(null);
   };
 

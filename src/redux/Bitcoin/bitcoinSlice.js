@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getBitcoinCurrency } from "./opetations";
-import { toUnixTimestamp, getPreviousDay } from "../../utils/dateUtils";
+import { toUnixTimestamp } from "../../utils/dateUtils";
 
 import toast from "react-hot-toast";
 
@@ -16,6 +16,7 @@ const bitcoinSlice = createSlice({
     isLoading: false,
     error: null,
     lastSyncTime: null,
+    markers: {},
   },
   reducers: {
     setStartDate: (state, action) => {
@@ -29,6 +30,10 @@ const bitcoinSlice = createSlice({
     },
     setLastSyncTime: (state, action) => {
       state.lastSyncTime = action.payload;
+    },
+    setMarkers: (state, action) => {
+      const { key, markers } = action.payload;
+      state.markers[key] = markers;
     },
   },
   extraReducers: (builder) => {
@@ -51,8 +56,13 @@ const bitcoinSlice = createSlice({
   },
 });
 
-export const { setStartDate, setEndDate, setFrequency, setLastSyncTime } =
-  bitcoinSlice.actions;
+export const {
+  setStartDate,
+  setEndDate,
+  setFrequency,
+  setLastSyncTime,
+  setMarkers,
+} = bitcoinSlice.actions;
 
 const bitcoinReducer = bitcoinSlice.reducer;
 export default bitcoinReducer;
